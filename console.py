@@ -7,6 +7,7 @@ from models import storage
 from models.base_model import BaseModel
 from models.engine.file_storage import FileStorage
 
+
 class HBNBCommand(cmd.Cmd):
     """contains the entry point of the command interpreter"""
     prompt = '(hbnb) '
@@ -101,6 +102,61 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
         else:
             print(str_rep)
+
+
+    def do_update(self, line):
+        """Updates an instance based on the class name and id"""
+        class_mapping = {
+            'BaseModel': BaseModel,
+        }
+        args = line.split()
+
+        if len(args) == 0:
+            print("** class name missing **")
+            return
+
+        cls_name = args[0]
+
+        if cls_name not in class_mapping:
+            print("** class doesn't exist **")
+            return
+
+        if len(args) < 2:
+            print("** instance id missing **")
+            return
+
+        inst_id = args[1]
+        key = "{}.{}".format(cls_name, inst_id)
+        insts = storage.all()
+
+        if key not in insts:
+            print("** no instance found **")
+            return
+
+        if len(args) < 3:
+            print("** attribute name missing **")
+            return
+
+        if len(args) < 4:
+            print("** value missing **")
+            return
+
+        attr_name = args[2]
+        attr_value_str = args[3]
+
+        instance = insts[key]
+
+        try:
+            attr_type = type(getattr(instance, attr_name))
+            attr_value = attr_type(attr_value_str)
+        except (ValueError, TypeError):
+            pass
+
+        # Update the attribute value
+        if attr_name not in ["id", "created_at", "updated_at"]:
+            setattr(instance, attr_name, attr_value)
+            instance.save()
+            storage.save()
 
 
 if __name__ == '__main__':
