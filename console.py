@@ -3,7 +3,8 @@
     Airbnb console program
 """
 import cmd
-from models import storage, BaseModel
+from models import storage
+from models.base_model import BaseModel
 
 
 class HBNBCommand(cmd.Cmd):
