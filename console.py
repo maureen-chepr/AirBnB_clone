@@ -86,7 +86,21 @@ class HBNBCommand(cmd.Cmd):
             Prints all string representation of all instances based
             or not on the class name
         """
-        
+        args = line.split()
+        insts = storage.all()
+
+        if len(args) == 0:
+            # If no class name is provided, print all instances
+            str_rep = [str(instance) for instance in insts.values()]
+        else:
+            # If class name is provided, filter instances of that class
+            cls_name = args[0]
+            str_rep = [str(instance) for key, instance in insts.items() if key.startswith(cls_name + ".")]
+
+        if not str_rep:
+            print("** no instance found **")
+        else:
+            print(str_rep)
 
 
 if __name__ == '__main__':
