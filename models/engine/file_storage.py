@@ -5,6 +5,7 @@ Class FileStorage saves json to files for persistence
 import json
 from os.path import isfile
 
+
 class FileStorage:
     """
     serializes instances to a JSON file and deserializes JSON file to instances
@@ -38,10 +39,22 @@ class FileStorage:
     def reload(self):
         """deserializes the JSON file to __objects if filepath exists"""
         #filename = "{}.json".format(self.__class__.__name__)
+        from models.base_model import BaseModel
         if isfile(self.__file_path):
             with open(self.__file_path, 'r') as file:
                 json_str = file.read()
                 if json_str:
                     dicto = json.loads(json_str)
-                    return dicto
-            
+                    class_mapping = {
+                        'BaseModel': BaseModel,
+                    }
+
+                    for key, obj_data in dicto.items():
+                        class_name, obj_id = key.split('.')
+                        class_type = class_mapping.get(class_name)
+
+                        if class_type:
+                            obj_instance = class_type(**obj_data)
+                            self.__objects[key] = obj_instance
+
+                    return self.__objects

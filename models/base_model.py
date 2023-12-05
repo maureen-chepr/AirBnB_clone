@@ -4,7 +4,8 @@ Class BaseModel which is the super class for all other classes
 """
 import uuid
 from datetime import datetime
-from models import storage  # Import the storage instance
+from models import storage
+
 
 class BaseModel:
     """
@@ -43,6 +44,10 @@ class BaseModel:
         """Returns a dictionary containing all keys/values of __dict__ of the instance"""
         attrs = self.__dict__.copy()
         attrs['__class__'] = self.__class__.__name__
-        attrs['created_at'] = self.created_at.isoformat()
-        attrs['updated_at'] = self.updated_at.isoformat()
+        # attrs['created_at'] = self.created_at.isoformat()
+        # attrs['updated_at'] = self.updated_at.isoformat()
+        if isinstance(attrs['created_at'], datetime):
+            attrs['created_at'] = attrs['created_at'].isoformat()
+        if isinstance(attrs['updated_at'], datetime):
+            attrs['updated_at'] = attrs['updated_at'].isoformat()
         return attrs
