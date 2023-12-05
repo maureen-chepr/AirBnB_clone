@@ -9,7 +9,7 @@ class FilesStoage:
     """
     serializes instances to a JSON file and deserializes JSON file to instances
     """
-    __file_path = #"file.json"
+    __file_path = "file.json"
     __objects = {}
 
     def all(self):
@@ -34,3 +34,14 @@ class FilesStoage:
 
         with open(self.__file__path, 'w') as file:
             json.dump(serl_objs, file)
+
+    def reload(self):
+        """deserializes the JSON file to __objects if filepath exists"""
+        filename = "{}.json".format(self.__class__.__name__)
+        if isfile(self.__file__path):
+            with open(filename, 'r') as file:
+                json_str = file.read()
+                if json_str:
+                    dicto = json.loads(json_str)
+                    return dicto
+            
