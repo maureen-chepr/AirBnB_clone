@@ -50,8 +50,8 @@ class FileStorage:
                     }
 
                     for key, obj_data in dicto.items():
-                        class_name, obj_id = key.split('.')
-                        class_type = class_mapping.get(class_name)
+                        cls_name, obj_id = key.split('.')
+                        class_type = class_mapping.get(cls_name)
 
                         if class_type:
                             obj_instance = class_type(**obj_data)

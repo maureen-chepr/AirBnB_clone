@@ -3,13 +3,14 @@
     Airbnb console program
 """
 import cmd
-from models import storage, BaseModel
-
+from models import storage
+from models.base_model import BaseModel
+from models.engine.file_storage import FileStorage
 
 class HBNBCommand(cmd.Cmd):
     """contains the entry point of the command interpreter"""
     prompt = '(hbnb) '
-
+    
     def do_EOF(self, line):
         """exit the program"""
         return True
@@ -39,11 +40,16 @@ class HBNBCommand(cmd.Cmd):
 
     def do_show(self, line):
         """Prints the string representation of an instance based on the class name and id"""
+        class_mapping = {
+         'BaseModel': BaseModel,
+        } 
         args = line.split()
         if len(line) == 0:
             print("** class name missing **")
+        if len(args) < 2:
+            print("** instance id missing **")
         cls_name = args[0]
-        if cls_name not in cls_mapping:
+        if cls_name not in class_mapping:
             print("** class doesn't exist **")
         inst_id = args[1]
         key = "{}.{}".format(cls_name, inst_id)
@@ -53,6 +59,34 @@ class HBNBCommand(cmd.Cmd):
         else:
             print(insts[key])
 
+    def do_destroy(self, line):
+        """Deletes an instance based on the class name and id"""
+        class_mapping = {
+         'BaseModel': BaseModel,
+        }
+        args = line.split()
+        if len(line) == 0:
+            print("** class name missing **")
+        if len(args) < 2:
+            print("** instance id missing **")
+        cls_name = args[0]
+        if cls_name not in class_mapping:
+            print("** class doesn't exist **")
+        inst_id = args[1]
+        key = "{}.{}".format(cls_name, inst_id)
+        insts = storage.all()
+        if key not in insts:
+            print("** no instance found **")
+        else:
+            del insts[key]
+            storage.save()
+
+    def do_all(self, line):
+        """
+            Prints all string representation of all instances based
+            or not on the class name
+        """
+        
 
 
 if __name__ == '__main__':
