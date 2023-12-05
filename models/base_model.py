@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 """
-    Class BaseModel which is the super class for all other classes
+Class BaseModel which is the super class for all other classes
 """
 import uuid
 from datetime import datetime
-from models.__init__ import storage
+from models import storage  # Import the storage instance
 
 class BaseModel:
     """
@@ -14,23 +14,30 @@ class BaseModel:
     def __init__(self, *args, **kwargs):
         """Initializes BaseModel instances"""
         if kwargs:
-              for key, value in kwargs.items():
-                if key is not "__class__":
+            for key, value in kwargs.items():
+                if key != "__class__":
                     setattr(self, key, value)
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
-        #to check if self should be **kwargs
-        storage.new(self)
+            if "id" not in kwargs:
+                self.id = str(uuid.uuid4())
+            if "created_at" not in kwargs:
+                self.created_at = datetime.now()
+            if "updated_at" not in kwargs:
+                self.updated_at = datetime.now()
+        else:
+            self.id = str(uuid.uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
+            storage.new(self)  # Call new method on storage for new instances
 
     def __str__(self):
         """String representation of class BaseModel"""
         return "[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__)
 
     def save(self):
-        """Updates the public instance attribute updated_at with the current datetime"""
+        """Updates the public instance attribute updated_at with the current datetime
+        and calls the save method on storage"""
         self.updated_at = datetime.now()
-        self.save(storage)
+        storage.save()
 
     def to_dict(self):
         """Returns a dictionary containing all keys/values of __dict__ of the instance"""
@@ -39,5 +46,3 @@ class BaseModel:
         attrs['created_at'] = self.created_at.isoformat()
         attrs['updated_at'] = self.updated_at.isoformat()
         return attrs
-
-

@@ -5,7 +5,7 @@ Class FileStorage saves json to files for persistence
 import json
 from os.path import isfile
 
-class FilesStorage:
+class FileStorage:
     """
     serializes instances to a JSON file and deserializes JSON file to instances
     """
@@ -24,7 +24,7 @@ class FilesStorage:
         """
         if obj:
             key = "{}.{}".format(obj.__class__.__name__, obj.id)
-            self.__object[key] = obj
+            self.__objects[key] = obj
 
     def save(self):
         """serializes __objects to the JSON file"""
