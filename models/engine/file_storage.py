@@ -40,6 +40,7 @@ class FileStorage:
         """deserializes the JSON file to __objects if filepath exists"""
         #filename = "{}.json".format(self.__class__.__name__)
         from models.base_model import BaseModel
+        from models.user import User
         if isfile(self.__file_path):
             with open(self.__file_path, 'r') as file:
                 json_str = file.read()
@@ -47,6 +48,7 @@ class FileStorage:
                     dicto = json.loads(json_str)
                     class_mapping = {
                         'BaseModel': BaseModel,
+                        'User': User,
                     }
 
                     for key, obj_data in dicto.items():

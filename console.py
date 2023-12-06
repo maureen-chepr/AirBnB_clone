@@ -6,6 +6,7 @@ import cmd
 from models import storage
 from models.base_model import BaseModel
 from models.engine.file_storage import FileStorage
+from models.user import User
 
 
 class HBNBCommand(cmd.Cmd):
@@ -43,6 +44,7 @@ class HBNBCommand(cmd.Cmd):
         """Prints the string representation of an instance based on the class name and id"""
         class_mapping = {
          'BaseModel': BaseModel,
+         'User': User,
         } 
         args = line.split()
         if len(line) == 0:
@@ -64,6 +66,7 @@ class HBNBCommand(cmd.Cmd):
         """Deletes an instance based on the class name and id"""
         class_mapping = {
          'BaseModel': BaseModel,
+         'User': User,
         }
         args = line.split()
         if len(line) == 0:
@@ -108,6 +111,7 @@ class HBNBCommand(cmd.Cmd):
         """Updates an instance based on the class name and id"""
         class_mapping = {
             'BaseModel': BaseModel,
+            'User': User,
         }
         args = line.split()
 
