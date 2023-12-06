@@ -41,6 +41,11 @@ class FileStorage:
         #filename = "{}.json".format(self.__class__.__name__)
         from models.base_model import BaseModel
         from models.user import User
+        from models.place import Place
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.review import Review
         if isfile(self.__file_path):
             with open(self.__file_path, 'r') as file:
                 json_str = file.read()
@@ -49,6 +54,11 @@ class FileStorage:
                     class_mapping = {
                         'BaseModel': BaseModel,
                         'User': User,
+                        'Place': Place,
+                        'State': State,
+                        'Review': Review,
+                        'City': City,
+                        'Amenity': Amenity,
                     }
 
                     for key, obj_data in dicto.items():
