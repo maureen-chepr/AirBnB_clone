@@ -101,14 +101,37 @@ class HBNBCommand(cmd.Cmd):
             del insts[key]
             storage.save()
 
+    def default(self, line):
+        """Called for any command not recognized by other 'do_*' """
+        if line.endswith(".all()"):
+            cls_name = line[:-6]
+
+            try:
+                cls = globals()[cls_name]
+                objlst = [str(obj) for key, obj in storage.all().items() if isinstance(obj, cls)]
+                print(objlst)
+            except KeyError:
+                print("** class doesn't exist **")
+
+        if line.endswith(".count()"):
+            cls_name = line[:-8]
+            try:
+                cls = globals()[cls_name]
+                objlst = [obj for key, obj in storage.all().items() if isinstance(obj, cls)]
+                print(len(objlst))
+            except KeyError:
+                 print("** class doesn't exist **")
+
+
+
     def do_all(self, line):
         """
             Prints all string representation of all instances based
             or not on the class name
         """
-        args = line.split()
+        args = line.split('.')
         insts = storage.all()
-
+        print(args[0])
         if len(args) == 0:
             # If no class name is provided, print all instances
             str_rep = [str(instance) for instance in insts.values()]
@@ -182,6 +205,7 @@ class HBNBCommand(cmd.Cmd):
             setattr(instance, attr_name, attr_value)
             instance.save()
             storage.save()
+
 
 
 if __name__ == '__main__':
