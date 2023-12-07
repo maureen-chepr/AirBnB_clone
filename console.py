@@ -3,6 +3,7 @@
     Airbnb console program
 """
 import cmd
+import re
 from models import storage
 from models.base_model import BaseModel
 from models.engine.file_storage import FileStorage
@@ -103,6 +104,19 @@ class HBNBCommand(cmd.Cmd):
 
     def default(self, line):
         """Called for any command not recognized by other 'do_*' """
+        #  show an instance based on its ID
+        lines = line.split('.')
+        if lines[1].startswith("show(\""):
+            pattern = r'show\("([^"]+)"\)'
+            match = re.findall(pattern, lines[1])
+            match = match[0]
+            for obj in storage.all().values():
+               if match ==  obj.id:
+                    print(obj)
+                    return
+            print("** no instance found **")
+
+        # get all insts of a class, eg User.all()
         if line.endswith(".all()"):
             cls_name = line[:-6]
 
@@ -112,7 +126,7 @@ class HBNBCommand(cmd.Cmd):
                 print(objlst)
             except KeyError:
                 print("** class doesn't exist **")
-
+        # Gets the total number of insts of a cls, ex User.count()
         if line.endswith(".count()"):
             cls_name = line[:-8]
             try:
@@ -121,8 +135,6 @@ class HBNBCommand(cmd.Cmd):
                 print(len(objlst))
             except KeyError:
                  print("** class doesn't exist **")
-
-
 
     def do_all(self, line):
         """
