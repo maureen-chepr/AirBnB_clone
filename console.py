@@ -131,6 +131,28 @@ class HBNBCommand(cmd.Cmd):
                        storage.save()
                        return
                 print("** no instance found **")
+        # update an instance based on it's ID
+        if lines[1].startswith("update("):
+            pattern = r'update\("([^"]+)", "([^"]+)", "([^"]+)"\)'
+            matches = re.match(pattern, lines[1])
+            
+            if matches:
+                instance_id, attr_name, attr_value = matches.groups()
+
+                key = "{}.{}".format(lines[0], instance_id)
+                insts = storage.all()
+                if key in insts:
+                    instance = insts[key]
+                    # Check if the attribute exists in the instance
+                    if hasattr(instance, attr_name):
+                        setattr(instance, attr_name, attr_value)
+                        instance.save()
+                        storage.save()
+                        print(instance)
+                        return
+                else:
+                    print("** instance not found **")
+
 
         # get all insts of a class, eg User.all()
         if line.endswith(".all()"):
@@ -151,6 +173,7 @@ class HBNBCommand(cmd.Cmd):
                 print(len(objlst))
             except KeyError:
                  print("** class doesn't exist **")
+
                 
     def do_all(self, line):
         """
@@ -232,6 +255,7 @@ class HBNBCommand(cmd.Cmd):
             setattr(instance, attr_name, attr_value)
             instance.save()
             storage.save()
+            # print(instance)
 
 
 
