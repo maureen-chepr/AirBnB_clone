@@ -157,9 +157,8 @@ class HBNBCommand(cmd.Cmd):
             Prints all string representation of all instances based
             or not on the class name
         """
-        args = line.split('.')
+        args = line.split()
         insts = storage.all()
-        print(args[0])
         if len(args) == 0:
             # If no class name is provided, print all instances
             str_rep = [str(instance) for instance in insts.values()]
