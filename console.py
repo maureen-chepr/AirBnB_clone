@@ -104,17 +104,33 @@ class HBNBCommand(cmd.Cmd):
 
     def default(self, line):
         """Called for any command not recognized by other 'do_*' """
-        #  show an instance based on its ID
+        # Show an instance based on its ID
         lines = line.split('.')
         if lines[1].startswith("show(\""):
             pattern = r'show\("([^"]+)"\)'
             match = re.findall(pattern, lines[1])
             match = match[0]
-            for obj in storage.all().values():
-               if match ==  obj.id:
+            key = "{}.{}".format(lines[0], match)
+            for ky, obj in storage.all().items():
+                if match ==  obj.id:
                     print(obj)
                     return
             print("** no instance found **")
+        # Destroy an instance based on his ID 
+        if lines[1].startswith("destroy"):
+            cls_name = line[:-10]
+            if lines[1].startswith("destroy(\""):
+                pattern = r'destroy\("([^"]+)"\)'
+                match = re.findall(pattern, lines[1])
+                match = match[0]
+
+                key = "{}.{}".format(lines[0], match)
+                for ky, obj in storage.all().items():
+                    if key ==  ky:
+                       del storage.all()[key]
+                       storage.save()
+                       return
+                print("** no instance found **")
 
         # get all insts of a class, eg User.all()
         if line.endswith(".all()"):
@@ -135,7 +151,7 @@ class HBNBCommand(cmd.Cmd):
                 print(len(objlst))
             except KeyError:
                  print("** class doesn't exist **")
-
+                
     def do_all(self, line):
         """
             Prints all string representation of all instances based
