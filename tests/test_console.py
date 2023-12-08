@@ -46,6 +46,19 @@ class TestHBNBCommand_prompting(unittest.TestCase):
                     exp, "{}".format(exp)
                     )
     @patch('sys.stdout', new_callable=StringIO)
+    def test_do_show(self, mock_stdout):
+        """Test do_show command"""
+        with patch('builtins.input', return_value='show BaseModel 45678'):
+            result = HBNBCommand().onecmd("BaseModel 45678")
+            self.assertFalse(result)
+            exp_out = mock_stdout.getvalue().strip()
+            out = (
+                    exp_out, '[BaseModel] (45678) {'\
+                            '\'first_name\': \'Betty\', \'id\': \'45678\',' \
+                            ' \'created_at\': datetime.datetime(2017, 10, 2, 3, 10, 25, 903293),' \
+                            ' \'updated_at\': datetime.datetime(2017, 10, 2, 3, 11, 3, 49401)}'
+                            )
+            self.assertEqual(exp_out, out)
 
 if __name__ == '__main__':
     unittest.main()
