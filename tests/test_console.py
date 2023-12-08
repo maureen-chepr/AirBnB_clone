@@ -45,7 +45,7 @@ class TestHBNBCommand_prompting(unittest.TestCase):
             self.assertTrue(
                     exp, "{}".format(exp)
                     )
-
+    @patch('sys.stdout', new_callable=StringIO)
 
 if __name__ == '__main__':
     unittest.main()
