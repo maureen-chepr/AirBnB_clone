@@ -105,7 +105,10 @@ class HBNBCommand(cmd.Cmd):
     def default(self, line):
         """Called for any command not recognized by other 'do_*' """
         # Show an instance based on its ID
-        lines = line.split('.')
+        try:
+           lines = line.split('.')
+        except IndexError:
+            print("** enter valid command **")
         if lines[1].startswith("show(\""):
             pattern = r'show\("([^"]+)"\)'
             match = re.findall(pattern, lines[1])
@@ -135,12 +138,15 @@ class HBNBCommand(cmd.Cmd):
         if lines[1].startswith("update("):
             pattern = r'update\("([^"]+)", "([^"]+)", "([^"]+)"\)'
             matches = re.match(pattern, lines[1])
-            
-            if matches:
-                instance_id, attr_name, attr_value = matches.groups()
 
+            if len(matches) != 3:
+                print("Usage: <class name>.update(<id>, <attribute name>, <attribute value>)")
+                return
+            elif matches:
+                instance_id, attr_name, attr_value = matches.groups()
                 key = "{}.{}".format(lines[0], instance_id)
                 insts = storage.all()
+
                 if key in insts:
                     instance = insts[key]
                     # Check if the attribute exists in the instance
@@ -148,11 +154,12 @@ class HBNBCommand(cmd.Cmd):
                         setattr(instance, attr_name, attr_value)
                         instance.save()
                         storage.save()
-                        print(instance)
                         return
+                    else:
+                        setattr(instance, attr_name, attr_value)
                 else:
                     print("** instance not found **")
-
+            
 
         # get all insts of a class, eg User.all()
         if line.endswith(".all()"):
@@ -255,7 +262,6 @@ class HBNBCommand(cmd.Cmd):
             setattr(instance, attr_name, attr_value)
             instance.save()
             storage.save()
-            # print(instance)
 
 
 
