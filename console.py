@@ -166,12 +166,7 @@ class HBNBCommand(cmd.Cmd):
                         return
                     else:
                         print("** instance not found **")
-<<<<<<< HEAD
- 
-=======
-                        
-   
->>>>>>> 54db6f64d8320d52e80006f07b8515c9047f700a
+
             # get all insts of a class, eg User.all().
             if line.endswith(".all()"):
                 cls_name = line[:-6]
