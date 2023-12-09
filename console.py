@@ -65,6 +65,9 @@ class HBNBCommand(cmd.Cmd):
         if len(args) < 2:
             print("** instance id missing **")
             return
+        if len(args) >= 2:
+            print("** too many arguments **")
+            return
         cls_name = args[0]
         if cls_name not in class_mapping or not cls_name:
             print("** class doesn't exist **")
@@ -108,29 +111,12 @@ class HBNBCommand(cmd.Cmd):
             del insts[key]
             storage.save()
 
-    def default(self, line):#return arg(for other code
+    def default(self, line):
         """Called for any command not recognized by other 'do_*' """
-        # Show an instance based on its ID
-        """argdict = {
-            "all": self.do_all,
-            "show": self.do_show,
-            "destroy": self.do_destroy,
-            #"count": self.do_count,
-            "update": self.do_update
-        }
-        match = re.search(r"\.", arg)
-        if match is not None:
-            argl = [arg[:match.span()[0]], arg[match.span()[1]:]]
-            match = re.search(r"\((.*?)\)", argl[1])
-            if match is not None:
-                command = [argl[1][:match.span()[0]], match.group()[1:-1]]
-                if command[0] in argdict.keys():
-                    call = "{} {}".format(argl[0], command[1])
-                    return argdict[command[0]](call)
-        print("*** Unknown syntax: {}".format(arg))
-        return False"""
         lines = line.split('.')
         if len(lines) > 1:
+
+            # Show an instance based on its ID
             if lines[1].startswith("show(\""):
                 pattern = r'show\("([^"]+)"\)'
                 match = re.findall(pattern, lines[1])
@@ -145,7 +131,6 @@ class HBNBCommand(cmd.Cmd):
             # Destroy an instance based on his ID 
             if lines[1].startswith("destroy"):
                 cls_name = line[:-10]
-                #if lines[1].startswith("destroy(\""):
                 pattern = r'destroy\("([^"]+)"\)'
                 match = re.findall(pattern, lines[1])
                 match = match[0]
@@ -157,6 +142,7 @@ class HBNBCommand(cmd.Cmd):
                        storage.save()
                        return
                 print("** no instance found **")
+
             # update an instance based on it's ID
             if lines[1].startswith("update("):
                 pattern = r'update\("([^"]+)", "([^"]+)", "([^"]+)"\)'
@@ -164,21 +150,21 @@ class HBNBCommand(cmd.Cmd):
             
                 if matches:
                     instance_id, attr_name, attr_value = matches.groups()
-
+                    print(instance_id, attr_name, attr_value)
                     key = "{}.{}".format(lines[0], instance_id)
                     insts = storage.all()
                     if key in insts:
                         instance = insts[key]
-                        # Check if the attribute exists in the instance
-                        if hasattr(instance, attr_name):
-                            setattr(instance, attr_name, attr_value)
-                            instance.save()
-                            storage.save()
-                            return
+                        instance.attr_name = attr_value
+                        #if hasattr(instance, attr_name):
+                            #setattr(instance, attr_name, attr_value)
+                            #instance.save()
+                            #storage.save()
+                            #return
                     else:
                         print("** instance not found **")
    
-            # get all insts of a class, eg User.all()
+            # get all insts of a class, eg User.all().
             if line.endswith(".all()"):
                 cls_name = line[:-6]
                 try:
@@ -188,7 +174,7 @@ class HBNBCommand(cmd.Cmd):
                 except KeyError:
                     print("** class doesn't exist **")
 
-            # Gets the total number of insts of a cls, ex User.count()
+            # Gets the total number of insts of a cls, ex User.count().
             if line.endswith(".count()"):
                 cls_name = line[:-8]
                 try:
@@ -197,7 +183,8 @@ class HBNBCommand(cmd.Cmd):
                     print(len(objlst))
                 except KeyError:
                     print("** class doesn't exist **")
-                
+
+
     def do_all(self, line):
         """Prints all string representation of all instances"""
         args = line.split()

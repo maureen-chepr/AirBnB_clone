@@ -63,4 +63,6 @@ class TestBaseModel(unittest.TestCase):
         """ Test attribute manipulation of class BaseModel inst"""
         bm = BaseModel()
         bm.first_name = "Moh"
+        bm.age = 89
         self.assertEqual(bm.first_name, "Moh")
+        self.assertEqual(bm.age, 89)
