@@ -59,13 +59,16 @@ class HBNBCommand(cmd.Cmd):
          'Amenity': Amenity,
         } 
         args = line.split()
-        if len(line) == 0:
+        if len(args) == 0:
             print("** class name missing **")
+            return
         if len(args) < 2:
             print("** instance id missing **")
+            return
         cls_name = args[0]
-        if cls_name not in class_mapping:
+        if cls_name not in class_mapping or not cls_name:
             print("** class doesn't exist **")
+            return
         inst_id = args[1]
         key = "{}.{}".format(cls_name, inst_id)
         insts = storage.all()
@@ -88,11 +91,14 @@ class HBNBCommand(cmd.Cmd):
         args = line.split()
         if len(line) == 0:
             print("** class name missing **")
+            return
         if len(args) < 2:
             print("** instance id missing **")
+            return
         cls_name = args[0]
         if cls_name not in class_mapping:
             print("** class doesn't exist **")
+            return
         inst_id = args[1]
         key = "{}.{}".format(cls_name, inst_id)
         insts = storage.all()
@@ -102,10 +108,10 @@ class HBNBCommand(cmd.Cmd):
             del insts[key]
             storage.save()
 
-    def default(self, arg):#return line
+    def default(self, line):#return arg(for other code
         """Called for any command not recognized by other 'do_*' """
         # Show an instance based on its ID
-        argdict = {
+        """argdict = {
             "all": self.do_all,
             "show": self.do_show,
             "destroy": self.do_destroy,
@@ -122,23 +128,24 @@ class HBNBCommand(cmd.Cmd):
                     call = "{} {}".format(argl[0], command[1])
                     return argdict[command[0]](call)
         print("*** Unknown syntax: {}".format(arg))
-        return False
-        """
+        return False"""
         lines = line.split('.')
-        if lines[1].startswith("show(\""):
-            pattern = r'show\("([^"]+)"\)'
-            match = re.findall(pattern, lines[1])
-            match = match[0]
-            key = "{}.{}".format(lines[0], match)
-            for ky, obj in storage.all().items():
-                if match ==  obj.id:
-                    print(obj)
-                    return
-            print("** no instance found **")
-        # Destroy an instance based on his ID 
-        if lines[1].startswith("destroy"):
-            cls_name = line[:-10]
-            if lines[1].startswith("destroy(\""):
+        if len(lines) > 1:
+            if lines[1].startswith("show(\""):
+                pattern = r'show\("([^"]+)"\)'
+                match = re.findall(pattern, lines[1])
+                match = match[0]
+                key = "{}.{}".format(lines[0], match)
+                for ky, obj in storage.all().items():
+                    if match ==  obj.id:
+                        print(obj)
+                        return
+                print("** no instance found **")
+
+            # Destroy an instance based on his ID 
+            if lines[1].startswith("destroy"):
+                cls_name = line[:-10]
+                #if lines[1].startswith("destroy(\""):
                 pattern = r'destroy\("([^"]+)"\)'
                 match = re.findall(pattern, lines[1])
                 match = match[0]
@@ -150,49 +157,46 @@ class HBNBCommand(cmd.Cmd):
                        storage.save()
                        return
                 print("** no instance found **")
-        # update an instance based on it's ID
-        if lines[1].startswith("update("):
-            pattern = r'update\("([^"]+)", "([^"]+)", "([^"]+)"\)'
-            matches = re.match(pattern, lines[1])
+            # update an instance based on it's ID
+            if lines[1].startswith("update("):
+                pattern = r'update\("([^"]+)", "([^"]+)", "([^"]+)"\)'
+                matches = re.match(pattern, lines[1])
             
-            if matches:
-                instance_id, attr_name, attr_value = matches.groups()
+                if matches:
+                    instance_id, attr_name, attr_value = matches.groups()
 
-                key = "{}.{}".format(lines[0], instance_id)
-                insts = storage.all()
-                if key in insts:
-                    instance = insts[key]
-                    # Check if the attribute exists in the instance
-                    if hasattr(instance, attr_name):
-                        setattr(instance, attr_name, attr_value)
-                        instance.save()
-                        storage.save()
-                        print(instance)
-                        return
-                else:
-                    print("** instance not found **")
+                    key = "{}.{}".format(lines[0], instance_id)
+                    insts = storage.all()
+                    if key in insts:
+                        instance = insts[key]
+                        # Check if the attribute exists in the instance
+                        if hasattr(instance, attr_name):
+                            setattr(instance, attr_name, attr_value)
+                            instance.save()
+                            storage.save()
+                            return
+                    else:
+                        print("** instance not found **")
    
+            # get all insts of a class, eg User.all()
+            if line.endswith(".all()"):
+                cls_name = line[:-6]
+                try:
+                    cls = globals()[cls_name]
+                    objlst = [str(obj) for key, obj in storage.all().items() if isinstance(obj, cls)]
+                    print(objlst)
+                except KeyError:
+                    print("** class doesn't exist **")
 
-        # get all insts of a class, eg User.all()
-        if line.endswith(".all()"):
-            cls_name = line[:-6]
-
-            try:
-                cls = globals()[cls_name]
-                objlst = [str(obj) for key, obj in storage.all().items() if isinstance(obj, cls)]
-                print(objlst)
-            except KeyError:
-                print("** class doesn't exist **")
-        # Gets the total number of insts of a cls, ex User.count()
-        if line.endswith(".count()"):
-            cls_name = line[:-8]
-            try:
-                cls = globals()[cls_name]
-                objlst = [obj for key, obj in storage.all().items() if isinstance(obj, cls)]
-                print(len(objlst))
-            except KeyError:
-                 print("** class doesn't exist **")
-            """
+            # Gets the total number of insts of a cls, ex User.count()
+            if line.endswith(".count()"):
+                cls_name = line[:-8]
+                try:
+                    cls = globals()[cls_name]
+                    objlst = [obj for key, obj in storage.all().items() if isinstance(obj, cls)]
+                    print(len(objlst))
+                except KeyError:
+                    print("** class doesn't exist **")
                 
     def do_all(self, line):
         """Prints all string representation of all instances"""
@@ -259,7 +263,6 @@ class HBNBCommand(cmd.Cmd):
         attr_value_str = args[3]
 
         instance = insts[key]
-
         try:
             attr_type = type(getattr(instance, attr_name))
             attr_value = attr_type(attr_value_str)
@@ -271,8 +274,6 @@ class HBNBCommand(cmd.Cmd):
             setattr(instance, attr_name, attr_value)
             instance.save()
             storage.save()
-            # print(instance)
-
 
 
 if __name__ == '__main__':
