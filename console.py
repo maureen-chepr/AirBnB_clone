@@ -65,9 +65,9 @@ class HBNBCommand(cmd.Cmd):
         if len(args) < 2:
             print("** instance id missing **")
             return
-        if len(args) >= 2:
-            print("** too many arguments **")
-            return
+        #if len(args) >= 2:
+            #print("** too many arguments **")
+            #return
         cls_name = args[0]
         if cls_name not in class_mapping or not cls_name:
             print("** class doesn't exist **")
@@ -150,20 +150,23 @@ class HBNBCommand(cmd.Cmd):
             
                 if matches:
                     instance_id, attr_name, attr_value = matches.groups()
-                    print(instance_id, attr_name, attr_value)
                     key = "{}.{}".format(lines[0], instance_id)
                     insts = storage.all()
                     if key in insts:
                         instance = insts[key]
-                        instance.attr_name = attr_value
-                        #if hasattr(instance, attr_name):
-                            #setattr(instance, attr_name, attr_value)
-                            #instance.save()
-                            #storage.save()
-                            #return
+                        attr_type = type(getattr(instance, attr_name, None))
+                        try:
+                            attr_value = attr_type(attr_value)
+                        except (ValueError, TypeError):
+                            print(f"Error: Invalid value")
+                            return
+                        setattr(instance, attr_name, type(attr_value))
+                        instance.save()
+                        storage.save()
+                        return
                     else:
                         print("** instance not found **")
-   
+ 
             # get all insts of a class, eg User.all().
             if line.endswith(".all()"):
                 cls_name = line[:-6]
