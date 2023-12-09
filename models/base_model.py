@@ -29,7 +29,7 @@ class BaseModel:
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
             storage.new(self)  # Call new method on storage for new instances
-        self.first_name = ""
+        #self.first_name = ""
 
     def __str__(self):
         """String representation of class BaseModel"""
