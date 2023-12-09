@@ -1,11 +1,14 @@
 #!/usr/bin/python3
-# Module responsible for testing  BaseModel in base_model.py module
+"""
+   Module responsible for testing  BaseModel in base_model.py module
+"""
 import unittest
 from models.base_model import BaseModel
 
 
 class TestBaseModel(unittest.TestCase):
     """Test class for BaseModel class"""
+
     #def SetUpClass(cls):
         #"""Does setup operatons before every test method"""
         #cls.bm_inst = Basemodel()
