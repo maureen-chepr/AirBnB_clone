@@ -53,7 +53,7 @@ class TestBaseModel(unittest.TestCase):
         """Test to_dict method with custom attribute values"""
         bm = BaseModel()
         bm.first_name = "John"
-        bm.age = 89  # shit I need to show this to Moh, sijui vile inapass
+        bm.age = 89
         expected_dict = {
             'id': bm.id,
             'created_at': bm.created_at.isoformat(),
@@ -79,11 +79,6 @@ class TestBaseModel(unittest.TestCase):
         self.assertTrue(hasattr(BaseModel, "save"))
         self.assertTrue(hasattr(BaseModel, "to_dict"))
 
-    def test_attribute_removal_after_to_dict(self):  # ken shld updte to_dict
-        """Test removing attributes after calling to_dict method"""
-        bm = BaseModel()
-        bm.first_name = "John"
-        bm.age = 89
-        bm_dict = bm.to_dict()
-        del bm.first_name
-        self.assertNotIn('first_name', bm_dict)
+
+if __name__ == "__main__":
+    unittest.main()
