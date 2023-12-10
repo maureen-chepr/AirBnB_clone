@@ -77,7 +77,8 @@ class TestHBNBCommand_prompt(unittest.TestCase):
     def test_help_create(self):
         """Testing help create"""
         with patch("sys.stdout", new=StringIO()) as f:
-            expd_outp = "Creates a new instance of BaseModel. Saves it json fi, prints id"
+            expd_outp = "Creates a new instance of BaseModel. \
+                         Saves it json fi, prints id"
             result = HBNBCommand().onecmd("help create")
             self.assertFalse(result)
             self.assertEqual(expd_outp, f.getvalue().strip())
@@ -85,7 +86,8 @@ class TestHBNBCommand_prompt(unittest.TestCase):
     def test_help_show(self):
         """Testing help show"""
         with patch("sys.stdout", new=StringIO()) as f:
-            expd_outp = "Prints the string representation of an instance based on the class name and id"
+            expd_outp = "Prints the string representation of an instance \
+                         based on the class name and id"
             result = HBNBCommand().onecmd("help show")
             self.assertFalse(result)
             self.assertEqual(expd_outp, f.getvalue().strip())
