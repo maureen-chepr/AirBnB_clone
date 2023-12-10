@@ -150,17 +150,12 @@ class HBNBCommand(cmd.Cmd):
             
                 if matches:
                     instance_id, attr_name, attr_value = matches.groups()
+                    print(attr_name, attr_value)
                     key = "{}.{}".format(lines[0], instance_id)
                     insts = storage.all()
                     if key in insts:
                         instance = insts[key]
-                        attr_type = type(getattr(instance, attr_name, None))
-                        try:
-                            attr_value = attr_type(attr_value)
-                        except (ValueError, TypeError):
-                            print(f"Error: Invalid value")
-                            return
-                        setattr(instance, attr_name, type(attr_value))
+                        setattr(instance, attr_name, attr_value)
                         instance.save()
                         storage.save()
                         return
