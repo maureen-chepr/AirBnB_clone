@@ -170,8 +170,10 @@ class HBNBCommand(cmd.Cmd):
                     storage.save()
 
                 else:
-                    print("Usage: <class name>.update(<id>, <attribute name>, <attribute value>) or\n"
-                          "Usage: <class name>.update(<id>, <dictionary representation>)")
+                    print("Usage: <class name>.update(<id>, <attribute \
+                           name>,<attribute value>) or\n"
+                          "Usage: <class name>.update(<id>, <dictionary\
+                           representation>)")
                     return
 
             # get all insts of a class, eg User.all().
