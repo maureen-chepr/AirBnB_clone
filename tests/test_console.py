@@ -13,6 +13,18 @@ from models.base_model import BaseModel
 
 class TestHBNBCommand_prompting(unittest.TestCase):
     """Unittest of the custom command prompt(hbnb)"""
+
+    def test_prompt_string(self):
+        """correct output of prompt"""
+        self.assertEqual("(hbnb) ", HBNBCommand.prompt)
+
+    def test_emptyline(self):
+        """input as an empty line"""
+        with patch('builtins.input', return_value=''):
+            with patch("sys.stdout", new=StringIO()) as f:
+                self.assertFalse(HBNBCommand().onecmd(""))
+                self.assertEqual("", f.getvalue().strip())
+
     @patch('sys.stdout', new_callable=StringIO)
     def test_do_EOF(self, mock_stdout):
         """Test do_EOF command"""
@@ -43,6 +55,15 @@ class TestHBNBCommand_prompting(unittest.TestCase):
                 self.assertTrue(
                     exp, "{}".format(exp)
                 )
+
+    def test_help_quit(self):
+        """Testing help quit"""
+        with patch("sys.stdout", new=StringIO()) as f:
+            expd_outp = "Quit command to exit the program"
+            result = HBNBCommand().onecmd("help quit")
+            self.assertFalse(result)
+            self.assertEqual(expd_outp, f.getvalue().strip())
+
 
 
 """
