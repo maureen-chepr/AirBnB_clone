@@ -65,9 +65,9 @@ class HBNBCommand(cmd.Cmd):
         if len(args) < 2:
             print("** instance id missing **")
             return
-        #if len(args) >= 2:
-            #print("** too many arguments **")
-            #return
+        if len(args) >= 2:
+            print("** too many arguments **")
+            return
         cls_name = args[0]
         if cls_name not in class_mapping or not cls_name:
             print("** class doesn't exist **")
@@ -145,22 +145,40 @@ class HBNBCommand(cmd.Cmd):
 
             # update an instance based on it's ID
             if lines[1].startswith("update("):
-                pattern = r'update\("([^"]+)", "([^"]+)", "([^"]+)"\)'
-                matches = re.match(pattern, lines[1])
-            
-                if matches:
-                    instance_id, attr_name, attr_value = matches.groups()
-                    print(attr_name, attr_value)
+                #dict_or_not = lines[1].split(" {")
+                #dicto = dict_or_not[1]
+                #dicto = ''.join(['{', dicto])
+                #dictor = dicto.strip(")")
+                #cast_dict = type(eval(dictor))
+                #print(dictor)
+                #print(type(eval(dictor)))
+                #if (type(eval(dictor)) == dict):
+                    #print("yes dict")
+                    #return
+                parts = lines[1].strip("update(").rstrip(")").split(", ")
+                       #updating one attribute at a time
+                if len(parts) == 3: 
+                    instance_id, attr_name, attr_value = parts
+                    instance_id = instance_id.strip("\"").rstrip("\"")
+                    attr_name = attr_name.strip("\"").rstrip("\"")
+                    cast = type(eval(attr_value))
+                    attr_value = attr_value.strip("\"").rstrip("\"")
+
                     key = "{}.{}".format(lines[0], instance_id)
+
                     insts = storage.all()
                     if key in insts:
                         instance = insts[key]
-                        setattr(instance, attr_name, attr_value)
-                        instance.save()
-                        storage.save()
-                        return
                     else:
                         print("** instance not found **")
+                        return
+                    setattr(instance, attr_name, cast(attr_value))
+                    instance.save()
+                    storage.save()
+
+                else:
+                    print("Usage: <class name>.update(<id>, <attribute name>, <attribute value>) or\nUsage: <class name>.update(<id>, <dictionary representation>)")
+                    return
 
             # get all insts of a class, eg User.all().
             if line.endswith(".all()"):
@@ -260,7 +278,5 @@ class HBNBCommand(cmd.Cmd):
             instance.save()
             storage.save()
 
-
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
-
