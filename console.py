@@ -18,7 +18,7 @@ from models.review import Review
 class HBNBCommand(cmd.Cmd):
     """contains the entry point of the command interpreter"""
     prompt = '(hbnb) '
-    
+
     def do_EOF(self, line):
         """exit the program"""
         return True
@@ -34,7 +34,6 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, line):
         """Creates a new instance of BaseModel. Saves it json fi, prints id"""
-        #if not self.__class__.__name__:
         if len(line) == 0:
             print("** class name missing **")
         else:
@@ -44,11 +43,15 @@ class HBNBCommand(cmd.Cmd):
                 new_inst.save()
                 storage.save()
                 print(new_inst.id)
-            except:
+            except Exception:
+                pass
                 print("** class doesn't exist **")
 
     def do_show(self, line):
-        """Prints the string representation of an instance based on the class name and id"""
+        """
+            Prints the string representation of an instance
+            based on the class name and id
+        """
         class_mapping = {
          'BaseModel': BaseModel,
          'User': User,
@@ -57,7 +60,7 @@ class HBNBCommand(cmd.Cmd):
          'Review': Review,
          'City': City,
          'Amenity': Amenity,
-        } 
+         }
         args = line.split()
         if len(args) == 0:
             print("** class name missing **")
@@ -90,7 +93,7 @@ class HBNBCommand(cmd.Cmd):
          'Review': Review,
          'City': City,
          'Amenity': Amenity,
-        }
+         }
         args = line.split()
         if len(line) == 0:
             print("** class name missing **")
@@ -123,12 +126,12 @@ class HBNBCommand(cmd.Cmd):
                 match = match[0]
                 key = "{}.{}".format(lines[0], match)
                 for ky, obj in storage.all().items():
-                    if match ==  obj.id:
+                    if match == obj.id:
                         print(obj)
                         return
                 print("** no instance found **")
 
-            # Destroy an instance based on his ID 
+            # Destroy an instance based on his ID
             if lines[1].startswith("destroy"):
                 cls_name = line[:-10]
                 pattern = r'destroy\("([^"]+)"\)'
@@ -137,27 +140,17 @@ class HBNBCommand(cmd.Cmd):
 
                 key = "{}.{}".format(lines[0], match)
                 for ky, obj in storage.all().items():
-                    if key ==  ky:
-                       del storage.all()[key]
-                       storage.save()
-                       return
+                    if key == ky:
+                        del storage.all()[key]
+                        storage.save()
+                        return
                 print("** no instance found **")
 
             # update an instance based on it's ID
             if lines[1].startswith("update("):
-                #dict_or_not = lines[1].split(" {")
-                #dicto = dict_or_not[1]
-                #dicto = ''.join(['{', dicto])
-                #dictor = dicto.strip(")")
-                #cast_dict = type(eval(dictor))
-                #print(dictor)
-                #print(type(eval(dictor)))
-                #if (type(eval(dictor)) == dict):
-                    #print("yes dict")
-                    #return
                 parts = lines[1].strip("update(").rstrip(")").split(", ")
-                       #updating one attribute at a time
-                if len(parts) == 3: 
+                # updating one attribute at a time
+                if len(parts) == 3:
                     instance_id, attr_name, attr_value = parts
                     instance_id = instance_id.strip("\"").rstrip("\"")
                     attr_name = attr_name.strip("\"").rstrip("\"")
@@ -177,7 +170,8 @@ class HBNBCommand(cmd.Cmd):
                     storage.save()
 
                 else:
-                    print("Usage: <class name>.update(<id>, <attribute name>, <attribute value>) or\nUsage: <class name>.update(<id>, <dictionary representation>)")
+                    print("Usage: <class name>.update(<id>, <attribute name>, <attribute value>) or\n"
+                          "Usage: <class name>.update(<id>, <dictionary representation>)")
                     return
 
             # get all insts of a class, eg User.all().
@@ -185,7 +179,8 @@ class HBNBCommand(cmd.Cmd):
                 cls_name = line[:-6]
                 try:
                     cls = globals()[cls_name]
-                    objlst = [str(obj) for key, obj in storage.all().items() if isinstance(obj, cls)]
+                    objlst = [str(obj) for key, obj in storage.all().items()
+                              if isinstance(obj, cls)]
                     print(objlst)
                 except KeyError:
                     print("** class doesn't exist **")
@@ -195,11 +190,11 @@ class HBNBCommand(cmd.Cmd):
                 cls_name = line[:-8]
                 try:
                     cls = globals()[cls_name]
-                    objlst = [obj for key, obj in storage.all().items() if isinstance(obj, cls)]
+                    objlst = [obj for key, obj in storage.all().items()
+                              if isinstance(obj, cls)]
                     print(len(objlst))
                 except KeyError:
                     print("** class doesn't exist **")
-
 
     def do_all(self, line):
         """Prints all string representation of all instances"""
@@ -211,13 +206,13 @@ class HBNBCommand(cmd.Cmd):
         else:
             # If class name is provided, filter instances of that class
             cls_name = args[0]
-            str_rep = [str(instance) for key, instance in insts.items() if key.startswith(cls_name + ".")]
+            str_rep = [str(instance) for key, instance in insts.items()
+                       if key.startswith(cls_name + ".")]
 
         if not str_rep:
             print("** no instance found **")
         else:
             print(str_rep)
-
 
     def do_update(self, line):
         """Updates an instance based on the class name and id"""
@@ -277,6 +272,7 @@ class HBNBCommand(cmd.Cmd):
             setattr(instance, attr_name, attr_value)
             instance.save()
             storage.save()
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
