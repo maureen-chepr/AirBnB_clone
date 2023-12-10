@@ -38,7 +38,6 @@ class FileStorage:
 
     def reload(self):
         """deserializes the JSON file to __objects if filepath exists"""
-        #filename = "{}.json".format(self.__class__.__name__)
         from models.base_model import BaseModel
         from models.user import User
         from models.place import Place

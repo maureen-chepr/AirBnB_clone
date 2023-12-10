@@ -4,6 +4,7 @@
 """
 from models.base_model import BaseModel
 
+
 class State(BaseModel):
     """This the Class State"""
     name = ""

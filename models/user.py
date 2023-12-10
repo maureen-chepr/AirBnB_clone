@@ -11,12 +11,3 @@ class User(BaseModel):
     password = ""
     first_name = ""
     last_name = ""
-
-    #def __init__(self, *args, **kwargs):
-        # """initializes the user class instances"""
-        #super().__init__(*args, **kwargs)
-        
-        #self.email = ""
-        #self.password = ""
-        #self.first_name = ""
-        #self.last_name = ""
