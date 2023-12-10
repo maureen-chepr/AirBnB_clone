@@ -11,7 +11,7 @@ from io import StringIO
 from models.base_model import BaseModel
 
 
-class TestHBNBCommand_prompting(unittest.TestCase):
+class TestHBNBCommand_prompt(unittest.TestCase):
     """Unittest of the custom command prompt(hbnb)"""
 
     def test_prompt_string(self):
@@ -19,7 +19,7 @@ class TestHBNBCommand_prompting(unittest.TestCase):
         self.assertEqual("(hbnb) ", HBNBCommand.prompt)
 
     def test_emptyline(self):
-        """input as an empty line"""
+        """input as an empty: line"""
         with patch('builtins.input', return_value=''):
             with patch("sys.stdout", new=StringIO()) as f:
                 self.assertFalse(HBNBCommand().onecmd(""))
@@ -55,6 +55,8 @@ class TestHBNBCommand_prompting(unittest.TestCase):
                 self.assertTrue(
                     exp, "{}".format(exp)
                 )
+class TestHBNBCommand_help(unittest.TestCase):
+    """Testing help commands"""
 
     def test_help_quit(self):
         """Testing help quit"""
