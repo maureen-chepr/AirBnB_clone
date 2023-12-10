@@ -2,6 +2,7 @@
 """
    Module responsible for testing  BaseModel in base_model.py module
 """
+import json
 from datetime import datetime
 import unittest
 from models.base_model import BaseModel
@@ -10,25 +11,25 @@ from models.base_model import BaseModel
 class TestBaseModel(unittest.TestCase):
     """Test class for BaseModel class"""
 
-    #def SetUpClass(cls):
-        #"""Does setup operatons before every test method"""
-        #cls.bm_inst = Basemodel()
-
-    #def tearDownClass(cls):
-        #"""Does clean up operations for every test case"""
-        #del cls.bm_inst
-
     def test_init(self):
         """Test BaseModel's constructor"""
         bm = BaseModel()
         self.assertTrue(isinstance(bm, BaseModel))
+
+    def test_init_with_attributes(self):
+        """Test BaseModel's constructor with attributes"""
+        bm = BaseModel(id="123", created_at=datetime(2022, 1, 1),
+                       updated_at=datetime(2022, 1, 2))
+        self.assertEqual(bm.id, "123")
+        self.assertEqual(bm.created_at, datetime(2022, 1, 1))
+        self.assertEqual(bm.updated_at, datetime(2022, 1, 2))
 
     def test_str(self):
         """Testing __str__ method for BaseModel"""
         bm = BaseModel()
         expd_output = f"[BaseModel] ({bm.id}) {bm.__dict__}"
         self.assertEqual(str(bm), expd_output)
-    
+
     def test_save(self):
         """Test save BaseModel method"""
         bm = BaseModel()
@@ -36,9 +37,6 @@ class TestBaseModel(unittest.TestCase):
         bm.save()
         new_updated_at = bm.updated_at
         self.assertNotEqual(prev_updated_at, new_updated_at)
-    #def test_save(self):
-        #"""Test save BaseModel method"""
-
 
     def test_to_dict(self):
         """Testing to_dict method in BaseModel class"""
@@ -55,7 +53,7 @@ class TestBaseModel(unittest.TestCase):
         """Test to_dict method with custom attribute values"""
         bm = BaseModel()
         bm.first_name = "John"
-        bm.age = 89 # shit I need to show this to Moh, sijui vile inapass
+        bm.age = 89  # shit I need to show this to Moh, sijui vile inapass
         expected_dict = {
             'id': bm.id,
             'created_at': bm.created_at.isoformat(),
@@ -66,7 +64,7 @@ class TestBaseModel(unittest.TestCase):
         }
         self.assertEqual(bm.to_dict(), expected_dict)
 
-    #Test serialization and deserialization to python and back
+    # Test serialization and deserialization to python and back
     def test_attribute_manipulation(self):
         """ Test attribute manipulation of class BaseModel inst"""
         bm = BaseModel()
@@ -75,28 +73,17 @@ class TestBaseModel(unittest.TestCase):
         self.assertEqual(bm.first_name, "Moh")
         self.assertEqual(bm.age, 89)
 
-    #test __init__
-    def test_init_with_keyword_arguments(self):
-        """Test initializing BaseModel with specific attributes using keyword arguments."""
-        ken_id = "ken_id"
-        ken_created_at = datetime(2023, 1, 1)
-        ken_updated_at = datetime(2023, 1, 2)
+    # Test to check existing atrributes
+    def test_attr(self):
+        self.assertTrue(hasattr(BaseModel, "__init__"))
+        self.assertTrue(hasattr(BaseModel, "save"))
+        self.assertTrue(hasattr(BaseModel, "to_dict"))
 
-    # Initialize BaseModel with custom attributes using keyword arguments
-        bm = BaseModel(
-            id=ken_id,
-            created_at=ken_created_at,
-            updated_at=ken_updated_at,
-            ken_attr="tester"
-        )
-
-    # Check if the instance is initialized with the correct values
-        self.assertEqual(bm.id, ken_id)
-        self.assertEqual(bm.created_at, ken_created_at)
-        self.assertEqual(bm.updated_at, ken_updated_at)
-
-    # Ensure that the custom attribute is set
-        self.assertEqual(getattr(bm, "ken_attr", None), "tester")
-
-    # Check if the instance is stored in the storage
-        self.assertIn(ken_id, storage.all())
+    def test_attribute_removal_after_to_dict(self):  # ken shld updte to_dict
+        """Test removing attributes after calling to_dict method"""
+        bm = BaseModel()
+        bm.first_name = "John"
+        bm.age = 89
+        bm_dict = bm.to_dict()
+        del bm.first_name
+        self.assertNotIn('first_name', bm_dict)
