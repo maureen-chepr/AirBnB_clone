@@ -41,7 +41,7 @@ class HBNBCommand(cmd.Cmd):
                 cls_type = eval(line)
                 new_inst = cls_type()
                 new_inst.save()
-                storage.save()
+                #storage.save()
                 print(new_inst.id)
             except Exception:
                 pass
@@ -62,10 +62,11 @@ class HBNBCommand(cmd.Cmd):
         if len(args) == 0:
             print("** class name missing **")
             return
+
         if len(args) < 2:
             print("** instance id missing **")
             return
-        if len(args) >= 2:
+        if len(args) >= 3:
             print("** too many arguments **")
             return
         cls_name = args[0]
@@ -204,6 +205,18 @@ class HBNBCommand(cmd.Cmd):
             str_rep = [str(instance) for instance in insts.values()]
         else:
             # If class name is provided, filter instances of that class
+            class_mapping = {
+                  'BaseModel': BaseModel,
+                  'User': User,
+                  'Place': Place,
+                  'State': State,
+                  'Review': Review,
+                  'City': City,
+                  'Amenity': Amenity,
+                  }
+            if args[0] not in class_mapping:
+                print("** class doesn't exist **")
+                return
             cls_name = args[0]
             str_rep = [str(instance) for key, instance in insts.items()
                        if key.startswith(cls_name + ".")]
@@ -271,6 +284,31 @@ class HBNBCommand(cmd.Cmd):
             setattr(instance, attr_name, attr_value)
             instance.save()
             storage.save()
+
+    def do_count(self, line):
+        """Prints total number of insts of a cls"""
+        class_mapping = {
+        'BaseModel': BaseModel,
+        'User': User,
+        'Place': Place,
+        'State': State,
+        'Review': Review,
+        'City': City,
+        'Amenity': Amenity,
+         }
+        count = 0
+        try:
+            if line in class_mapping:
+                cls = class_mapping[line]
+                for key, objs in storage.all().items():
+                    if isinstance(obj, cls):
+                        count += 1
+            #cls = class_mapping[cls_name]
+            #objlst = [obj for key, obj in storage.all().items() if isinstance(obj, cls)]
+            #count = len(objlst)
+                print(count)  # Print the count immediately after calculating it
+        except KeyError:
+            print("** class doesn't exist **")
 
 
 if __name__ == '__main__':
