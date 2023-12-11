@@ -26,8 +26,8 @@ class BaseModel:
                 self.updated_at = datetime.now()
         else:
             self.id = str(uuid.uuid4())
-            self.created_at = datetime.now()
-            self.updated_at = datetime.now()
+            self.created_at = datetime.utcnow()
+            self.updated_at = datetime.utcnow()
             storage.new(self)  # Call new method on storage for new instances
 
     def __str__(self):
@@ -41,7 +41,7 @@ class BaseModel:
             with the current datetime
             and calls the save method on storage
         """
-        self.updated_at = datetime.now()
+        self.updated_at = datetime.utcnow()
         storage.save()
 
     def to_dict(self):

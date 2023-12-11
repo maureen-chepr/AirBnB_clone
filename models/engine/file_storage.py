@@ -12,6 +12,7 @@ class FileStorage:
     """
     __file_path = "file.json"
     __objects = {}
+  
 
     def all(self):
         """
@@ -45,27 +46,31 @@ class FileStorage:
         from models.city import City
         from models.amenity import Amenity
         from models.review import Review
+
         if isfile(self.__file_path):
-            with open(self.__file_path, 'r') as file:
-                json_str = file.read()
-                if json_str:
-                    dicto = json.loads(json_str)
-                    class_mapping = {
-                        'BaseModel': BaseModel,
-                        'User': User,
-                        'Place': Place,
-                        'State': State,
-                        'Review': Review,
-                        'City': City,
-                        'Amenity': Amenity,
-                    }
+            try:
+                with open(self.__file_path, 'r') as file:
+                    json_str = file.read()
+                    if json_str:
+                        dicto = json.loads(json_str) 
+                        class_mapping = {
+                           'BaseModel': BaseModel,
+                           'User': User,
+                           'Place': Place,
+                           'State': State,
+                           'Review': Review,
+                           'City': City,
+                           'Amenity': Amenity,
+                         }
 
                     for key, obj_data in dicto.items():
                         cls_name, obj_id = key.split('.')
                         class_type = class_mapping.get(cls_name)
 
-                        if class_type:
+                        if class_type and isinstance(class_type, BaseModel):
                             obj_instance = class_type(**obj_data)
                             self.__objects[key] = obj_instance
-
                     return self.__objects
+
+            except (FileNotFoundError):
+                pass 
