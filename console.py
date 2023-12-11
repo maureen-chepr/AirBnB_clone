@@ -33,7 +33,7 @@ class HBNBCommand(cmd.Cmd):
         return False
 
     def do_create(self, line):
-        """Creates a new instance of BaseModel. Saves it json fi, prints id"""
+        """Creates a new instance of BaseModel"""
         if len(line) == 0:
             print("** class name missing **")
         else:
@@ -48,10 +48,7 @@ class HBNBCommand(cmd.Cmd):
                 print("** class doesn't exist **")
 
     def do_show(self, line):
-        """
-            Prints the string representation of an instance
-            based on the class name and id
-        """
+        """String representation of an instance"""
         class_mapping = {
          'BaseModel': BaseModel,
          'User': User,
