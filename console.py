@@ -212,7 +212,7 @@ class HBNBCommand(cmd.Cmd):
                        if key.startswith(cls_name + ".")]
 
         if not str_rep:
-            print("** no instance found **")
+            print("** class doesn't exist **")
         else:
             print(str_rep)
 
