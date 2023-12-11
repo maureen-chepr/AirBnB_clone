@@ -76,6 +76,9 @@ class HBNBCommand(cmd.Cmd):
         inst_id = args[1]
         key = "{}.{}".format(cls_name, inst_id)
         insts = storage.all()
+        if cls_name not in class_mapping:
+            print("** class doesn't exist **")
+            return
         if key not in insts:
             print("** no instance found **")
         else:
@@ -222,7 +225,7 @@ class HBNBCommand(cmd.Cmd):
                        if key.startswith(cls_name + ".")]
 
         if not str_rep:
-            print("** no instance found **")
+            print("** class doesn't exist **")
         else:
             print(str_rep)
 
