@@ -263,6 +263,9 @@ class HBNBCommand(cmd.Cmd):
         attr_value_str = args[3]
 
         instance = insts[key]
+        if not hasattr(instance, attr_name):
+            print("** no attribute found **")
+            return
         try:
             attr_type = type(getattr(instance, attr_name))
             attr_value = attr_type(attr_value_str)
