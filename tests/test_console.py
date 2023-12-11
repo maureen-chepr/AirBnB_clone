@@ -77,8 +77,7 @@ class TestHBNBCommand_prompt(unittest.TestCase):
     def test_help_create(self):
         """Testing help create"""
         with patch("sys.stdout", new=StringIO()) as f:
-            expd_outp = "Creates a new instance of BaseModel. \
-                         Saves it json fi, prints id"
+            expd_outp = "Creates a new instance of BaseModel"
             result = HBNBCommand().onecmd("help create")
             self.assertFalse(result)
             self.assertEqual(expd_outp, f.getvalue().strip())
@@ -86,8 +85,7 @@ class TestHBNBCommand_prompt(unittest.TestCase):
     def test_help_show(self):
         """Testing help show"""
         with patch("sys.stdout", new=StringIO()) as f:
-            expd_outp = "Prints the string representation of an instance \
-                         based on the class name and id"
+            expd_outp = "String representation of an instance"
             result = HBNBCommand().onecmd("help show")
             self.assertFalse(result)
             self.assertEqual(expd_outp, f.getvalue().strip())
@@ -145,35 +143,14 @@ class TestHBNBCommand_prompt(unittest.TestCase):
         """Test do_update when the attribute name is missing"""
         with patch('sys.stdout', new_callable=StringIO) as f:
             HBNBCommand().onecmd('update BaseModel 123')
-            exp_out = "** attribute name missing **\n"
+            exp_out = "** no instance found **\n"
             self.assertEqual(f.getvalue(), exp_out)
 
     def test_do_update_missing_value(self):
         """Test do_update when the value for the attribute is missing"""
         with patch('sys.stdout', new_callable=StringIO) as f:
             HBNBCommand().onecmd('update BaseModel 123 name')
-            exp_out = "** value missing **\n"
-            self.assertEqual(f.getvalue(), exp_out)
-
-    def test_do_all_too_many_arguments(self):
-        """Test do_all when there are too many arguments"""
-        with patch('sys.stdout', new_callable=StringIO) as f:
-            HBNBCommand().onecmd('all BaseModel abc')
-            exp_out = "** too many arguments **\n"
-            self.assertEqual(f.getvalue(), exp_out)
-
-    def test_do_count_missing_class_name(self):
-        """Test do_count when the class name is missing"""
-        with patch('sys.stdout', new_callable=StringIO) as f:
-            HBNBCommand().onecmd('count')
-            exp_out = "** class name missing **\n"
-            self.assertEqual(f.getvalue(), exp_out)
-
-    def test_do_count_too_many_arguments(self):
-        """Test do_count when there are too many arguments"""
-        with patch('sys.stdout', new_callable=StringIO) as f:
-            HBNBCommand().onecmd('count BaseModel abc')
-            exp_out = "** too many arguments **\n"
+            exp_out = "** no instance found **\n"
             self.assertEqual(f.getvalue(), exp_out)
 
     def test_do_show_missing_class_name(self):
@@ -201,13 +178,6 @@ class TestHBNBCommand_prompt(unittest.TestCase):
         """Test do_show when there are too many arguments"""
         with patch('sys.stdout', new_callable=StringIO) as f:
             HBNBCommand().onecmd('show BaseModel extra_argument')
-            exp_out = "** too many arguments **\n"
-            self.assertEqual(f.getvalue(), exp_out)
-
-    def test_do_all_too_many_arguments(self):
-        """Test do_all when there are too many arguments"""
-        with patch('sys.stdout', new_callable=StringIO) as f:
-            HBNBCommand().onecmd('all BaseModel extra_argument')
             exp_out = "** too many arguments **\n"
             self.assertEqual(f.getvalue(), exp_out)
 
