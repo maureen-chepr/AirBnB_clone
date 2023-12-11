@@ -65,7 +65,7 @@ class HBNBCommand(cmd.Cmd):
         if len(args) < 2:
             print("** instance id missing **")
             return
-        if len(args) >= 2:
+        if len(args) >= 3:
             print("** too many arguments **")
             return
         cls_name = args[0]
