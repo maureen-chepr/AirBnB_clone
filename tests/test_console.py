@@ -255,6 +255,22 @@ class TestHBNBCommand_prompt(unittest.TestCase):
                 exp_out = str(inst)
                 self.assertEqual(output, exp_out)
 
+    
+    class TestDestroyMethod(unittest.TestCase):
+        def setUp(self):
+            self.cnsl = HBNBCommand()
+
+            def test_destroy_nonexistent_id(self):
+                """Test if HBNBCommand handles destroy command for a non-existent ID"""
+                non_existent_id = "nonexistent_id"
+                # Mocking the sys.stdout for capturing output
+                with patch('sys.stdout', new_callable=StringIO) as f:
+                    with patch.object(storage, 'all', return_value={}):
+                        # Calling the destroy command with the non-existent ID
+                        self.cnsl.onecmd(f"destroy User {non_existent_id}")
+                        output = f.getvalue().strip()
+                        self.assertIn(f"** no instance found **", output)
+
 
 
 if __name__ == "__main__":
