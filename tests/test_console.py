@@ -248,6 +248,7 @@ class TestHBNBCommand_prompt(unittest.TestCase):
 
         for class_name, cls in class_mapping.items():
             with patch('sys.stdout', new_callable=StringIO) as f:
+<<<<<<< HEAD
                 with patch('models.storage.all()') as mock_all:
                     mock_all.rtn = None
                     cmd = HBNBCommand()
@@ -255,6 +256,68 @@ class TestHBNBCommand_prompt(unittest.TestCase):
                     output = f.getvalue().strip()
                     exp_out = str(cls())
                     self.assertEqual(output, exp_out)
+=======
+                inst = cls()
+                cmd = HBNBCommand()
+                cmd.onecmd(f"show {class_name} {inst.id}")
+                output = f.getvalue().strip()
+                exp_out = str(inst)
+                self.assertEqual(output, exp_out)
+
+    
+    class TestDestroyMethod(unittest.TestCase):
+        def setUp(self):
+            self.cnsl = HBNBCommand()
+
+            def test_destroy_nonexistent_id(self):
+                """Test if HBNBCommand handles destroy command for a non-existent ID"""
+                non_existent_id = "nonexistent_id"
+                # Mocking the sys.stdout for capturing output
+                with patch('sys.stdout', new_callable=StringIO) as f:
+                    with patch.object(storage, 'all', return_value={}):
+                        # Calling the destroy command with the non-existent ID
+                        self.cnsl.onecmd(f"destroy User {non_existent_id}")
+                        output = f.getvalue().strip()
+                        self.assertIn(f"** no instance found **", output)
+    class TestFirstCodeClassesWithCommands(unittest.TestCase):
+        """Test cases for the first code snippet with a focus on Classes with Commands"""
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_first_code_create_base_model(self, mock_stdout):
+        """Test create command for BaseModel"""
+        with patch('builtins.input', return_value='create BaseModel'):
+            with patch('sys.stdout', new=StringIO()) as f:
+                result = HBNBCommand().onecmd("create BaseModel")
+                self.assertFalse(result)
+                exp_output = f.getvalue().strip()
+                self.assertTrue(exp_output, "{}".format(exp_output))
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_first_code_update_City_name(self, mock_stdout):
+        """Test update command for City class"""
+        obj = City()
+        storage.new(obj)
+        storage.save()
+        with patch('sys.stdout', new_callable=StringIO) as f:
+            HBNBCommand().onecmd('update City {} name "new_name"'.format(obj.id))
+            updated_obj = storage.all()['City.{}'.format(obj.id)]
+            self.assertEqual(updated_obj.name, 'new_name')
+    
+    class TestFirstCodeUpdateCommand(unittest.TestCase):
+        """Test cases for the first code snippet with a focus on the update command"""
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_first_code_update_user_email(self, f):
+        """Test update command for User class"""
+        obj = User()
+        storage.new(obj)
+        storage.save()
+        with patch('sys.stdout', new_callable=StringIO) as f:
+            HBNBCommand().onecmd('update User {} email "new_email@example.com"'.format(obj.id))
+            updated_obj = storage.all()['User.{}'.format(obj.id)]
+            self.assertEqual(updated_obj.email, 'new_email@example.com')
+
+>>>>>>> 844aa0ee5769ce6963d8aab82526c1708a8b1e2b
 
 
 if __name__ == "__main__":
