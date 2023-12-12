@@ -203,6 +203,22 @@ class TestHBNBCommand_prompt(unittest.TestCase):
             exp_out = "** class name missing **\n"
             self.assertEqual(f.getvalue(), exp_out)
 
+    def test_do_count_with_invalid_class(self):
+        """Test do_count with an invalid class"""
+        with patch('sys.stdout', new_callable=StringIO) as f:
+            HBNBCommand().onecmd('ken.count()')
+            exp_out = "** class doesn't exist **\n"
+            self.assertEqual(f.getvalue(), exp_out)
+
+    def test_do_count_with_no_instances(self):
+        """Test do_count with a class that has no instances"""
+        with patch('sys.stdout', new_callable=StringIO) as f:
+            with patch('models.storage.all') as mock_all:
+                mock_all.return_value = {}
+                HBNBCommand().onecmd('State.count()')
+                exp_out = '0\n'
+                self.assertEqual(f.getvalue(), exp_out)
+
 
 if __name__ == "__main__":
     unittest.main()
