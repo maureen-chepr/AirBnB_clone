@@ -150,33 +150,38 @@ class HBNBCommand(cmd.Cmd):
             # update an instance based on it's ID
             if lines[1].startswith("update("):
                 parts = lines[1].strip("update(").rstrip(")").split(", ")
-                # updating one attribute at a time
+
                 if len(parts) == 3:
-                    instance_id, attr_name, attr_value = parts
-                    instance_id = instance_id.strip("\"").rstrip("\"")
-                    attr_name = attr_name.strip("\"").rstrip("\"")
-                    cast = type(eval(attr_value))
-                    attr_value = attr_value.strip("\"").rstrip("\"")
+                    parts2 = []
+                    for part in parts:
+                        part = part.strip("\"").strip("'")
+                        parts2.append(part)
+                    instance_id, attr_name, attr_value = parts2
 
+                    instance_id = instance_id.strip("\"").rstrip("'")
+                    attr_name = attr_name.strip("\"").strip("'")
+                    attr_value_str = attr_value.strip("\"").strip("'")
+                      #check if attribute to be set has an int val and cast it
+                    if attr_value_str.isdigit():
+                        cast = type(eval(attr_value_str))
+                        attr_value_str = cast(attr_value_str)
                     key = "{}.{}".format(lines[0], instance_id)
-
                     insts = storage.all()
                     if key in insts:
                         instance = insts[key]
                     else:
-                        print("** instance not found **")
-                        return
-                    setattr(instance, attr_name, cast(attr_value))
+                       print("** instance not found **")
+                       return
+
+                    setattr(instance, attr_name, attr_value_str)
                     instance.save()
                     storage.save()
-
                 else:
-                    print("Usage: <class name>.update(<id>, <attribute \
-                           name>,<attribute value>) or\n"
-                          "Usage: <class name>.update(<id>, <dictionary\
-                           representation>)")
-                    return
-
+                    print("Usage: <class name>.update(<id>, <attribute\
+name>,<attribute value>) or\n"
+"Usage: <class name>.update(<id>, <dictionary\
+representation>)")
+                
             # get all insts of a class, eg User.all().
             if line.endswith(".all()"):
                 cls_name = line[:-6]
