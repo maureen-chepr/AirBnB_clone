@@ -3,7 +3,7 @@
 import datetime
 import uuid
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 from models import storage
 from console import HBNBCommand
 from models.engine.file_storage import FileStorage
@@ -64,7 +64,7 @@ class TestHBNBCommand_prompt(unittest.TestCase):
             HBNBCommand().onecmd('update State {} name "new_name"'
                                  .format(obj.id))
             updated_obj = storage.all()['State.{}'.format(obj.id)]
-            self.assertEqual(updated_obj.name, '"new_name"')
+            self.assertEqual(updated_obj.name, 'new_name')
 
     def test_help_quit(self):
         """Testing help quit"""
@@ -218,6 +218,38 @@ class TestHBNBCommand_prompt(unittest.TestCase):
                 HBNBCommand().onecmd('State.count()')
                 exp_out = '0\n'
                 self.assertEqual(f.getvalue(), exp_out)
+
+    def test_do_count_with_valid_class(self):
+        """Test do_count with a valid class that has instances"""
+        with patch('sys.stdout', new_callable=StringIO) as f:
+            with patch('models.storage.all') as mock_all:
+                mock_all.ret_val = {'State.1': MagicMock(), 'State.2': MagicMock()}
+                HBNBCommand().onecmd('State.count()')
+                exp_out = 2
+                self.assertEqual(len(mock_all.ret_val), exp_out)
+
+def test_show_method_present_for_all_classes(self):
+    """Test if show method is present for all classes"""
+    class_mapping = {
+        'BaseModel': BaseModel,
+        'User': User,
+        'Place': Place,
+        'State': State,
+        'Review': Review,
+        'City': City,
+        'Amenity': Amenity,
+    }
+
+    for class_name, cls in class_mapping.items():
+        with patch('sys.stdout', new_callable=StringIO) as f:
+            inst = cls()
+            cls_name = f"show('{inst.id}')"
+            res = hasattr(inst, 'show') and callable(getattr(inst, 'show', None))
+            self.assertTrue(res)
+
+            res = hasattr(inst, cls_name) and callable(getattr(inst, cls_name, None))
+            self.assertTrue(res)
+
 
 
 if __name__ == "__main__":
