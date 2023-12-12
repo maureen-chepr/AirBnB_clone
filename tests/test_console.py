@@ -10,6 +10,12 @@ from models.engine.file_storage import FileStorage
 from io import StringIO
 from models.base_model import BaseModel
 from models.state import State
+from models.user import User
+from models.place import Place
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.review import Review
 
 
 class TestHBNBCommand_prompt(unittest.TestCase):
@@ -228,27 +234,26 @@ class TestHBNBCommand_prompt(unittest.TestCase):
                 exp_out = 2
                 self.assertEqual(len(mock_all.ret_val), exp_out)
 
-def test_show_method_present_for_all_classes(self):
-    """Test if show method is present for all classes"""
-    class_mapping = {
-        'BaseModel': BaseModel,
-        'User': User,
-        'Place': Place,
-        'State': State,
-        'Review': Review,
-        'City': City,
-        'Amenity': Amenity,
-    }
+    def test_show_command_for_all_classes(self):
+        """Test if show command works for all classes"""
+        class_mapping = {
+            'BaseModel': BaseModel,
+            'User': User,
+            'Place': Place,
+            'State': State,
+            'Review': Review,
+            'City': City,
+            'Amenity': Amenity,
+        }
 
-    for class_name, cls in class_mapping.items():
-        with patch('sys.stdout', new_callable=StringIO) as f:
-            inst = cls()
-            cls_name = f"show('{inst.id}')"
-            res = hasattr(inst, 'show') and callable(getattr(inst, 'show', None))
-            self.assertTrue(res)
-
-            res = hasattr(inst, cls_name) and callable(getattr(inst, cls_name, None))
-            self.assertTrue(res)
+        for class_name, cls in class_mapping.items():
+            with patch('sys.stdout', new_callable=StringIO) as f:
+                inst = cls()
+                cmd = HBNBCommand()
+                cmd.onecmd(f"show {class_name} {inst.id}")
+                output = f.getvalue().strip()
+                exp_out = str(inst)
+                self.assertEqual(output, exp_out)
 
 
 
