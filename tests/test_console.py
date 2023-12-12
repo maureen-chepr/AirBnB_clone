@@ -117,6 +117,7 @@ class TestHBNBCommand_prompt(unittest.TestCase):
         self.assertIsNotNone(HBNBCommand.do_destroy.__doc__)
         self.assertIsNotNone(HBNBCommand.default.__doc__)
         self.assertIsNotNone(HBNBCommand.do_all.__doc__)
+        self.assertIsNotNone(HBNBCommand.do_count.__doc__)
 
     def test_do_update_missing_class_name(self):
         """Test do_update when the class name is missing"""
@@ -177,7 +178,7 @@ class TestHBNBCommand_prompt(unittest.TestCase):
     def test_do_show_too_many_arguments(self):
         """Test do_show when there are too many arguments"""
         with patch('sys.stdout', new_callable=StringIO) as f:
-            HBNBCommand().onecmd('show BaseModel extra_argument')
+            HBNBCommand().onecmd('show BaseModel abc 123')
             exp_out = "** too many arguments **\n"
             self.assertEqual(f.getvalue(), exp_out)
 
@@ -201,6 +202,22 @@ class TestHBNBCommand_prompt(unittest.TestCase):
             HBNBCommand().onecmd('destroy')
             exp_out = "** class name missing **\n"
             self.assertEqual(f.getvalue(), exp_out)
+
+    def test_do_count_with_invalid_class(self):
+        """Test do_count with an invalid class"""
+        with patch('sys.stdout', new_callable=StringIO) as f:
+            HBNBCommand().onecmd('ken.count()')
+            exp_out = "** class doesn't exist **\n"
+            self.assertEqual(f.getvalue(), exp_out)
+
+    def test_do_count_with_no_instances(self):
+        """Test do_count with a class that has no instances"""
+        with patch('sys.stdout', new_callable=StringIO) as f:
+            with patch('models.storage.all') as mock_all:
+                mock_all.return_value = {}
+                HBNBCommand().onecmd('State.count()')
+                exp_out = '0\n'
+                self.assertEqual(f.getvalue(), exp_out)
 
 
 if __name__ == "__main__":
