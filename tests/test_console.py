@@ -270,7 +270,29 @@ class TestHBNBCommand_prompt(unittest.TestCase):
                         self.cnsl.onecmd(f"destroy User {non_existent_id}")
                         output = f.getvalue().strip()
                         self.assertIn(f"** no instance found **", output)
+    class TestFirstCodeClassesWithCommands(unittest.TestCase):
+        """Test cases for the first code snippet with a focus on Classes with Commands"""
 
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_first_code_create_base_model(self, mock_stdout):
+        """Test create command for BaseModel"""
+        with patch('builtins.input', return_value='create BaseModel'):
+            with patch('sys.stdout', new=StringIO()) as f:
+                result = HBNBCommand().onecmd("create BaseModel")
+                self.assertFalse(result)
+                exp_output = f.getvalue().strip()
+                self.assertTrue(exp_output, "{}".format(exp_output))
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_first_code_update_state_name(self, mock_stdout):
+        """Test update command for State class"""
+        obj = State()
+        storage.new(obj)
+        storage.save()
+        with patch('sys.stdout', new_callable=StringIO) as f:
+            HBNBCommand().onecmd('update State {} name "new_name"'.format(obj.id))
+            updated_obj = storage.all()['State.{}'.format(obj.id)]
+            self.assertEqual(updated_obj.name, 'new_name')
 
 
 if __name__ == "__main__":
