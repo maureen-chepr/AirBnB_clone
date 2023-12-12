@@ -284,15 +284,30 @@ class TestHBNBCommand_prompt(unittest.TestCase):
                 self.assertTrue(exp_output, "{}".format(exp_output))
 
     @patch('sys.stdout', new_callable=StringIO)
-    def test_first_code_update_state_name(self, mock_stdout):
-        """Test update command for State class"""
-        obj = State()
+    def test_first_code_update_City_name(self, mock_stdout):
+        """Test update command for City class"""
+        obj = City()
         storage.new(obj)
         storage.save()
         with patch('sys.stdout', new_callable=StringIO) as f:
-            HBNBCommand().onecmd('update State {} name "new_name"'.format(obj.id))
-            updated_obj = storage.all()['State.{}'.format(obj.id)]
+            HBNBCommand().onecmd('update City {} name "new_name"'.format(obj.id))
+            updated_obj = storage.all()['City.{}'.format(obj.id)]
             self.assertEqual(updated_obj.name, 'new_name')
+    
+    class TestFirstCodeUpdateCommand(unittest.TestCase):
+        """Test cases for the first code snippet with a focus on the update command"""
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_first_code_update_user_email(self, f):
+        """Test update command for User class"""
+        obj = User()
+        storage.new(obj)
+        storage.save()
+        with patch('sys.stdout', new_callable=StringIO) as f:
+            HBNBCommand().onecmd('update User {} email "new_email@example.com"'.format(obj.id))
+            updated_obj = storage.all()['User.{}'.format(obj.id)]
+            self.assertEqual(updated_obj.email, 'new_email@example.com')
+
 
 
 if __name__ == "__main__":
