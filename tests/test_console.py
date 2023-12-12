@@ -221,12 +221,35 @@ class TestHBNBCommand_prompt(unittest.TestCase):
 
     def test_do_count_with_valid_class(self):
         """Test do_count with a valid class that has instances"""
-        with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
+        with patch('sys.stdout', new_callable=StringIO) as f:
             with patch('models.storage.all') as mock_all:
-                mock_all.return_value = {'State.1': MagicMock(), 'State.2': MagicMock()}
+                mock_all.ret_val = {'State.1': MagicMock(), 'State.2': MagicMock()}
                 HBNBCommand().onecmd('State.count()')
-                expected_output = 2
-                self.assertEqual(len(mock_all.return_value), expected_output)
+                exp_out = 2
+                self.assertEqual(len(mock_all.ret_val), exp_out)
+
+def test_show_method_present_for_all_classes(self):
+    """Test if show method is present for all classes"""
+    class_mapping = {
+        'BaseModel': BaseModel,
+        'User': User,
+        'Place': Place,
+        'State': State,
+        'Review': Review,
+        'City': City,
+        'Amenity': Amenity,
+    }
+
+    for class_name, cls in class_mapping.items():
+        with patch('sys.stdout', new_callable=StringIO) as f:
+            inst = cls()
+            cls_name = f"show('{inst.id}')"
+            res = hasattr(inst, 'show') and callable(getattr(inst, 'show', None))
+            self.assertTrue(res)
+
+            res = hasattr(inst, cls_name) and callable(getattr(inst, cls_name, None))
+            self.assertTrue(res)
+
 
 
 if __name__ == "__main__":
