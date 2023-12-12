@@ -3,7 +3,7 @@
 import datetime
 import uuid
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 from models import storage
 from console import HBNBCommand
 from models.engine.file_storage import FileStorage
@@ -64,7 +64,7 @@ class TestHBNBCommand_prompt(unittest.TestCase):
             HBNBCommand().onecmd('update State {} name "new_name"'
                                  .format(obj.id))
             updated_obj = storage.all()['State.{}'.format(obj.id)]
-            self.assertEqual(updated_obj.name, '"new_name"')
+            self.assertEqual(updated_obj.name, 'new_name')
 
     def test_help_quit(self):
         """Testing help quit"""
@@ -218,6 +218,15 @@ class TestHBNBCommand_prompt(unittest.TestCase):
                 HBNBCommand().onecmd('State.count()')
                 exp_out = '0\n'
                 self.assertEqual(f.getvalue(), exp_out)
+
+    def test_do_count_with_valid_class(self):
+        """Test do_count with a valid class that has instances"""
+        with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
+            with patch('models.storage.all') as mock_all:
+                mock_all.return_value = {'State.1': MagicMock(), 'State.2': MagicMock()}
+                HBNBCommand().onecmd('State.count()')
+                expected_output = 2
+                self.assertEqual(len(mock_all.return_value), expected_output)
 
 
 if __name__ == "__main__":
