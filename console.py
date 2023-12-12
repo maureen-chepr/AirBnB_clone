@@ -257,6 +257,7 @@ class HBNBCommand(cmd.Cmd):
             return
 
         inst_id = args[1]
+        inst_id = inst_id.strip("\"").strip("'")
         key = "{}.{}".format(cls_name, inst_id)
         insts = storage.all()
 
@@ -273,20 +274,13 @@ class HBNBCommand(cmd.Cmd):
             return
 
         attr_name = args[2]
+        attr_name = attr_name.strip("\"").strip("'")
         attr_value_str = args[3]
-
+        attr_value_str = attr_value_str.strip("\"").strip("'")
         instance = insts[key]
-        try:
-            attr_type = type(getattr(instance, attr_name))
-            attr_value = attr_type(attr_value_str)
-        except (ValueError, TypeError):
-            pass
-
-        # Update the attribute value
-        if attr_name not in ["id", "created_at", "updated_at"]:
-            setattr(instance, attr_name, attr_value)
-            instance.save()
-            storage.save()
+        setattr(instance, attr_name, attr_value_str)
+        instance.save()
+        storage.save()
 
     def do_count(self, line):
         """Prints total number of insts of a cls"""
@@ -304,12 +298,9 @@ class HBNBCommand(cmd.Cmd):
             if line in class_mapping:
                 cls = class_mapping[line]
                 for key, objs in storage.all().items():
-                    if isinstance(obj, cls):
+                    if isinstance(objs, cls):
                         count += 1
-            #cls = class_mapping[cls_name]
-            #objlst = [obj for key, obj in storage.all().items() if isinstance(obj, cls)]
-            #count = len(objlst)
-                print(count)  # Print the count immediately after calculating it
+                print(count)
         except KeyError:
             print("** class doesn't exist **")
 
