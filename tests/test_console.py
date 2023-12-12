@@ -248,13 +248,13 @@ class TestHBNBCommand_prompt(unittest.TestCase):
 
         for class_name, cls in class_mapping.items():
             with patch('sys.stdout', new_callable=StringIO) as f:
-                inst = cls()
-                cmd = HBNBCommand()
-                cmd.onecmd(f"show {class_name} {inst.id}")
-                output = f.getvalue().strip()
-                exp_out = str(inst)
-                self.assertEqual(output, exp_out)
-
+                with patch('models.storage.all()') as mock_all:
+                    mock_all.rtn = None
+                    cmd = HBNBCommand()
+                    cmd.onecmd(f"{class_name}.show(1234)")
+                    output = f.getvalue().strip()
+                    exp_out = str(cls())
+                    self.assertEqual(output, exp_out)
 
 
 if __name__ == "__main__":

@@ -149,8 +149,18 @@ class HBNBCommand(cmd.Cmd):
 
             # update an instance based on it's ID
             if lines[1].startswith("update("):
+                #update multiple attributes in an instance using a dict
+                if lines[1].split()[1].startswith("{"):
+                    key1 = lines[1].split()[1].strip(",").strip(" ")
+                    val1 = lines[1].split()[2].strip(",").strip(" ")
+                    key2 = lines[1].split()[3].strip(",").strip(" ")
+                    val2 = lines[1].split()[4].strip("}").strip(")")
+                    updating_dict = {key1: val1, key2: val2}
+                    print(key1, '..', val1, '--', key2, '--', val2)
+                    return
                 parts = lines[1].strip("update(").rstrip(")").split(", ")
 
+                #Update an instance's attribute one at a time
                 if len(parts) == 3:
                     parts2 = []
                     for part in parts:
